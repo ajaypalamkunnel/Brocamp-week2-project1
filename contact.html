@@ -8,8 +8,12 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-   
-
+    <style>
+      .error {
+          color: red;
+      }
+  </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <!-- CSS here -->
@@ -95,32 +99,37 @@
         <div class="col-lg-8">
           <form class="form-contact contact_form" action="" id="submit-form" novalidate="novalidate">
             <div class="row">
-              <div class="col-12">
-                <div class="form-group">
-                  
-                    <textarea class="form-control w-100" name="message" id="message" cols="30" rows="9" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter Message'" placeholder = 'Enter Message'></textarea>
+                <div class="col-12">
+                    <div class="form-group">
+                        <textarea class="form-control w-100" name="message" id="message" cols="30" rows="9" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter Message'" placeholder='Enter Message'></textarea>
+                        <span class="error" id="message-error"></span>
+                    </div>
                 </div>
-              </div>
-              <div class="col-sm-6">
-                <div class="form-group">
-                  <input class="form-control" name="name" id="name" type="text" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter your name'" placeholder = 'Enter your name'>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <input class="form-control" name="name" id="name" type="text" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter your name'" placeholder='Enter your name'>
+                        <span class="error" id="name-error"></span>
+                    </div>
                 </div>
-              </div>
-              <div class="col-sm-6">
-                <div class="form-group">
-                  <input class="form-control" name="email" id="email" type="email" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter email address'" placeholder = 'Enter email address'>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <input class="form-control" name="email" id="email" type="email" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter email address'" placeholder='Enter email address'>
+                        <span class="error" id="email-error"></span>
+                    </div>
                 </div>
-              </div>
-              <div class="col-12">
-                <div class="form-group">
-                  <input class="form-control" name="subject" id="subject" type="text" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter Subject'" placeholder = 'Enter Subject'>
+                <div class="col-12">
+                    <div class="form-group">
+                        <input class="form-control" name="subject" id="subject" type="text" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter Subject'" placeholder='Enter Subject'>
+                        <span class="error" id="subject-error"></span>
+                    </div>
                 </div>
-              </div>
             </div>
             <div class="form-group mt-3">
-              <button type="submit" class="button button-contactForm btn_4 boxed-btn">Send Message</button>
+                <button type="submit" class="button button-contactForm btn_4 boxed-btn">Send Message</button>
             </div>
-          </form>
+        </form>
+    
+    
         </div>
         <div class="col-lg-4">
           <div class="media contact-info">
@@ -257,23 +266,75 @@
 
 
   <script>
-    $("#submit-form").submit((e)=>{
-        e.preventDefault()
-        $.ajax({
-            url:"https://script.google.com/macros/s/AKfycby4UcqFKpxEvWW3ElIRUkvga7M_cbo3_X-wRff9F_PeXBl1Yyt-OOwlyITDkW_L_N3h/exec",
-            data:$("#submit-form").serialize(),
-            method:"post",
-            success:function (response){
-                alert("Form submitted successfully")
-                window.location.reload()
-                //window.location.href="https://google.com"
-            },
-            error:function (err){
-                alert("Something Error")
 
+
+document.getElementById('submit-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent form submission
+
+            let isValid = true;
+
+            // Clear previous error messages
+            document.getElementById('message-error').innerText = '';
+            document.getElementById('name-error').innerText = '';
+            document.getElementById('email-error').innerText = '';
+            document.getElementById('subject-error').innerText = '';
+
+            // Validate message
+            const message = document.getElementById('message').value;
+            if (!message) {
+                document.getElementById('message-error').innerText = 'Message is required.';
+                isValid = false;
             }
-        })
-    })
+
+            // Validate name
+            const name = document.getElementById('name').value;
+            if (!name) {
+                document.getElementById('name-error').innerText = 'Name is required.';
+                isValid = false;
+            } else if (name.length < 3) {
+                document.getElementById('name-error').innerText = 'Name must have at least 3 letters.';
+                isValid = false;
+            }
+
+            // Validate email
+            const email = document.getElementById('email').value;
+            const emailPattern = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
+            if (!email) {
+                document.getElementById('email-error').innerText = 'Email is required.';
+                isValid = false;
+            } else if (!emailPattern.test(email)) {
+                document.getElementById('email-error').innerText = 'Enter a valid email address.';
+                isValid = false;
+            }
+
+            // Validate subject
+            const subject = document.getElementById('subject').value;
+            const subjectWords = subject.trim().split(/\s+/);
+            if (!subject) {
+                document.getElementById('subject-error').innerText = 'Subject is required.';
+                isValid = false;
+            } else if (subjectWords.length < 5) {
+                document.getElementById('subject-error').innerText = 'Subject must have at least 5 words.';
+                isValid = false;
+            }
+
+            if (isValid) {
+                $.ajax({
+                    url: "https://script.google.com/macros/s/AKfycby4UcqFKpxEvWW3ElIRUkvga7M_cbo3_X-wRff9F_PeXBl1Yyt-OOwlyITDkW_L_N3h/exec",
+                    data: $("#submit-form").serialize(),
+                    method: "post",
+                    success: function(response) {
+                        alert("Form submitted successfully");
+                        window.location.reload(); // Reload the page
+                    },
+                    error: function(err) {
+                        alert("Something went wrong");
+                    }
+                });
+            }
+        });
+
+    
 </script>
 </body>
 
