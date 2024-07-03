@@ -267,72 +267,75 @@
 
   <script>
 
-
 document.getElementById('submit-form').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent form submission
+    event.preventDefault(); // Prevent form submission
 
-            let isValid = true;
+    let isValid = true;
 
-            // Clear previous error messages
-            document.getElementById('message-error').innerText = '';
-            document.getElementById('name-error').innerText = '';
-            document.getElementById('email-error').innerText = '';
-            document.getElementById('subject-error').innerText = '';
+    // Clear previous error messages
+    document.getElementById('message-error').innerText = '';
+    document.getElementById('name-error').innerText = '';
+    document.getElementById('email-error').innerText = '';
+    document.getElementById('subject-error').innerText = '';
 
-            // Validate message
-            const message = document.getElementById('message').value;
-            if (!message) {
-                document.getElementById('message-error').innerText = 'Message is required.';
-                isValid = false;
-            }
+    // Validate message
+    const message = document.getElementById('message').value;
+    if (!message) {
+        document.getElementById('message-error').innerText = 'Message is required.';
+        isValid = false;
+    }
 
-            // Validate name
-            const name = document.getElementById('name').value;
-            if (!name) {
-                document.getElementById('name-error').innerText = 'Name is required.';
-                isValid = false;
-            } else if (name.length < 3) {
-                document.getElementById('name-error').innerText = 'Name must have at least 3 letters.';
-                isValid = false;
-            }
+    // Validate name
+    const name = document.getElementById('name').value;
+    const namePattern = /^[a-zA-Z\s]+$/;
+    if (!name) {
+        document.getElementById('name-error').innerText = 'Name is required.';
+        isValid = false;
+    } else if (name.length < 3) {
+        document.getElementById('name-error').innerText = 'Name must have at least 3 letters.';
+        isValid = false;
+    } else if (!namePattern.test(name)) {
+        document.getElementById('name-error').innerText = 'Name must contain only letters and spaces.';
+        isValid = false;
+    }
 
-            // Validate email
-            const email = document.getElementById('email').value;
-            const emailPattern = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
-            if (!email) {
-                document.getElementById('email-error').innerText = 'Email is required.';
-                isValid = false;
-            } else if (!emailPattern.test(email)) {
-                document.getElementById('email-error').innerText = 'Enter a valid email address.';
-                isValid = false;
-            }
+    // Validate email
+    const email = document.getElementById('email').value;
+    const emailPattern = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
+    if (!email) {
+        document.getElementById('email-error').innerText = 'Email is required.';
+        isValid = false;
+    } else if (!emailPattern.test(email)) {
+        document.getElementById('email-error').innerText = 'Enter a valid email address.';
+        isValid = false;
+    }
 
-            // Validate subject
-            const subject = document.getElementById('subject').value;
-            const subjectWords = subject.trim().split(/\s+/);
-            if (!subject) {
-                document.getElementById('subject-error').innerText = 'Subject is required.';
-                isValid = false;
-            } else if (subjectWords.length < 5) {
-                document.getElementById('subject-error').innerText = 'Subject must have at least 5 words.';
-                isValid = false;
-            }
+    // Validate subject
+    const subject = document.getElementById('subject').value;
+    const subjectWords = subject.trim().split(/\s+/);
+    if (!subject) {
+        document.getElementById('subject-error').innerText = 'Subject is required.';
+        isValid = false;
+    } else if (subjectWords.length < 5) {
+        document.getElementById('subject-error').innerText = 'Subject must have at least 5 words.';
+        isValid = false;
+    }
 
-            if (isValid) {
-                $.ajax({
-                    url: "https://script.google.com/macros/s/AKfycby4UcqFKpxEvWW3ElIRUkvga7M_cbo3_X-wRff9F_PeXBl1Yyt-OOwlyITDkW_L_N3h/exec",
-                    data: $("#submit-form").serialize(),
-                    method: "post",
-                    success: function(response) {
-                        alert("Form submitted successfully");
-                        window.location.reload(); // Reload the page
-                    },
-                    error: function(err) {
-                        alert("Something went wrong");
-                    }
-                });
+    if (isValid) {
+        $.ajax({
+            url: "https://script.google.com/macros/s/AKfycby4UcqFKpxEvWW3ElIRUkvga7M_cbo3_X-wRff9F_PeXBl1Yyt-OOwlyITDkW_L_N3h/exec",
+            data: $("#submit-form").serialize(),
+            method: "post",
+            success: function(response) {
+                alert("Form submitted successfully");
+                window.location.reload(); // Reload the page
+            },
+            error: function(err) {
+                alert("Something went wrong");
             }
         });
+    }
+});
 
     
 </script>
